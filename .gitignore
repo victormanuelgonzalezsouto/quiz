@@ -1,6 +1,7 @@
 ﻿# Archivo de configuración para contenido que no se debe incluir en el control de versiones.
 
 # Archivos individuales:
+quiz.sqlite
 
 # Patrones:
 
