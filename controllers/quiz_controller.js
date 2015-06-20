@@ -22,14 +22,14 @@ exports.index = function(req, res) {
 		  	order: 'pregunta ASC'
 		}).then(
 		function(quizes) {
-			res.render('quizes/index', { quizes: quizes });
+			res.render('quizes/index', { quizes: quizes, errors: [] });
 		}
 	).catch(function(error) { next(error); });
 };
 	
 // GET /qui)zes/:id
 exports.show = function(req, res) {
-	res.render('quizes/show', { quiz: req.quiz });
+	res.render('quizes/show', { quiz: req.quiz, errors: [] });
 };
 
 // GET /quizes/:id/answer
@@ -38,7 +38,7 @@ exports.answer = function(req, res) {
 	if (req.query.respuesta === req.quiz.respuesta) {
 		resultado = 'Correcto';
 	}
-	res.render('quizes/answer', { quiz: req.quiz, respuesta: resultado });
+	res.render('quizes/answer', { quiz: req.quiz, respuesta: resultado, errors: [] });
 };
 
 // GET /quizes/new
@@ -46,16 +46,26 @@ exports.new = function(req, res) {
 	var quiz = models.Quiz.build(
 		{ pregunta: "Pregunta", respuesta: "Respuesta" }
 	);
-	res.render('quizes/new', { quiz: quiz });
+	res.render('quizes/new', { quiz: quiz, errors: [] });
 };
 
 // POST /quizes/create
 exports.create = function(req, res) {
 	var quiz = models.Quiz.build(req.body.quiz);
 
-	// Guarda en la base de datos los campos pregunta y respuesta de quiz
-	quiz.save({ fields: [ "pregunta", "respuesta" ]}).then(function() {
-		// Redirección HTTP (URL relativo) lista de preguntas
-		res.redirect('/quizes');
-	});
+	var err = quiz.validate();
+	if (err) {
+		var i;
+		var errors = [];
+		for (var e in err) {
+		 	errors.push({ message: err[e] });
+		}
+		res.render('quizes/new', { quiz: quiz, errors: errors });
+	} else {
+		// Guarda en la base de datos los campos pregunta y respuesta de quiz
+		quiz.save({ fields: [ "pregunta", "respuesta" ]}).then(function() {
+			// Redirección HTTP (URL relativo) lista de preguntas
+			res.redirect('/quizes');
+		});
+	}
 };
