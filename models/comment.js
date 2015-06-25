@@ -10,6 +10,10 @@ module.exports = function(sequelize, DataTypes) {
 						msg: '-> Falta comentario'
 					} 
 				}
+			},
+			publicado: {
+				type: DataTypes.BOOLEAN,
+				defaultValue: false
 			}
 		});
 };

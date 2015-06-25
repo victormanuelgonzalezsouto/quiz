@@ -18,6 +18,9 @@ router.get('/author', function(req, res) {
 // Autoload de comandos con :quizId
 router.param('quizId', quizController.load);
 
+// Autoload de comandos con :commentId
+router.param('commentId', commentController.load);
+
 // Definición de rutas de sesión
 router.get('/login',	sessionController.new); // Formulario login
 router.post('/login',	sessionController.create); // Crear sesión
@@ -35,5 +38,7 @@ router.delete('/quizes/:quizId(\\d+)', 		sessionController.loginRequired, quizCo
 
 router.get('/quizes/:quizId(\\d+)/comments/new',	commentController.new);
 router.post('/quizes/:quizId(\\d+)/comments',	commentController.create);
+router.get('/quizes/:quizId(\\d+)/comments/:commentId(\\d+)/publish',
+	sessionController.loginRequired, commentController.publish); // Debería ser PUT
 
 module.exports = router;
