@@ -1,0 +1,5 @@
+cd certs
+...\openssl1-0.9.8.r-x64_86-win64-rev2\openssl.exe genrsa -out quiz-2015-key.pem 2048
+set OPENSSL_CONF=c:\OpenSSL\openssl.cnf
+...\openssl1-0.9.8.r-x64_86-win64-rev2\openssl.exe req -new -sha256 -key quiz-2015-key.pem -out quiz-2015-csr.pem
+...\openssl1-0.9.8.r-x64_86-win64-rev2\openssl.exe x509 -req -in quiz-2015-csr.pem -signkey quiz-2015-key.pem -out quiz-2015-cert.pem
