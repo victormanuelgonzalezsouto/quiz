@@ -28,7 +28,7 @@ exports.index = function(req, res) {
 	).catch(function(error) { next(error); });
 };
 	
-// GET /qui)zes/:id
+// GET /quizes/:id
 exports.show = function(req, res) {
 	res.render('quizes/show', { quiz: req.quiz, errors: [] });
 };
