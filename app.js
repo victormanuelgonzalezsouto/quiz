@@ -10,6 +10,8 @@ var session = require('express-session');
 
 var routes = require('./routes/index');
 
+var sessionController = require('./controllers/session_controller');
+
 var app = express();
 
 // view engine setup
@@ -36,6 +38,31 @@ app.use(function(req, res, next) {
 
     // Hacer visible req.session en las vistas
     res.locals.session = req.session;
+    next();
+});
+
+// Mecanismo de autologout
+app.use(function(req, res, next) {
+    // Si existe login...
+    if (req.session.user) {
+        // Si existe última transacción con login...
+        if (req.session.lastRequestDate) {
+            var elapsedSeconds = (new Date() - new Date(req.session.lastRequestDate)) / 1000;
+
+            // Si han transcurrido más de 2 minutos desde la última transacción HTTP...
+            if (elapsedSeconds > 120) {
+                sessionController.destroy(req, res);
+                return;
+            }
+        }
+
+        // Guardar en cada transacción con login la hora de sistema
+        req.session.lastRequestDate = new Date();
+    } else {
+        // Borrar variable de hora de ñultima transacción con login
+        delete req.session.lastRequestDate;
+    }
+
     next();
 });
 
